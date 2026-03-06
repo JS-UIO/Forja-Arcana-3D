@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forja Arcana 3D — Artefactos dignos de partidas épicas</title>
+  <meta name="description" content="Accesorios impresos en 3D para juegos de mesa. Artefactos artesanales para Catan, Carcassonne, Brass, Terraforming Mars, Scythe y más.">
+  <meta property="og:title" content="Forja Arcana 3D">
+  <meta property="og:description" content="Artefactos dignos de partidas épicas — Accesorios 3D para juegos de mesa">
+  <meta property="og:image" content="logo-icon.png">
+  <meta name="theme-color" content="#0D0D0F">
+  <link rel="icon" type="image/png" href="logo-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8D48B;
+      --gold-dark: #8B6914;
+      --fire: #E85D26;
+      --fire-glow: #FF8C42;
+      --ember: #C0392B;
+      --dark-bg: #0D0D0F;
+      --dark-card: #151518;
+      --dark-card-hover: #1C1C21;
+      --dark-surface: #1A1A1F;
+      --dark-border: #2A2A32;
+      --blue-arcane: #3A7BD5;
+      --blue-glow: #5DADE2;
+      --text-primary: #E8E4DC;
+      --text-secondary: #9B978F;
+      --text-muted: #6B6860;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      font-family: 'Crimson Pro', Georgia, serif;
+      overflow-x: hidden;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--dark-bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+    /* ─── PARTICLES ─── */
+    .bg-particles {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: var(--fire-glow);
+      border-radius: 50%;
+      opacity: 0;
+      animation: floatUp 6s ease-in infinite;
+    }
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateY(100vh) scale(0); }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.15; }
+      100% { opacity: 0; transform: translateY(-10vh) scale(1); }
+    }
+
+    /* ─── NAVBAR ─── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 0.75rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(13,13,15,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      transition: all 0.3s;
+    }
+    .navbar.scrolled {
+      padding: 0.5rem 2rem;
+      background: rgba(13,13,15,0.97);
+      border-bottom-color: rgba(201,168,76,0.3);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 0.75rem;
+      text-decoration: none; cursor: pointer;
+    }
+    .nav-logo img {
+      width: 42px; height: 42px;
+      border-radius: 50%; object-fit: cover;
+    }
+    .nav-logo-text {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.1rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--fire-glow));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links {
+      display: flex; gap: 2rem;
+      align-items: center; list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-secondary); text-decoration: none;
+      font-family: 'Cinzel', serif; font-size: 0.8rem;
+      font-weight: 500; letter-spacing: 1.5px;
+      text-transform: uppercase; transition: color 0.3s; cursor: pointer;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-right { display: flex; gap: 0.75rem; align-items: center; }
+    .cart-btn {
+      position: relative; background: none;
+      border: 1px solid var(--gold-dark); color: var(--gold);
+      padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer;
+      font-family: 'Cinzel', serif; font-size: 0.75rem;
+      letter-spacing: 1px; text-transform: uppercase;
+      transition: all 0.3s; display: flex; align-items: center; gap: 0.5rem;
+    }
+    .cart-btn:hover {
+      background: rgba(201,168,76,0.1);
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(201,168,76,0.15);
+    }
+    .cart-badge {
+      background: var(--fire); color: white;
+      border-radius: 50%; width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 600;
+    }
+    .mobile-menu-btn {
+      display: none; background: none;
+      border: 1px solid var(--dark-border); color: var(--text-secondary);
+      padding: 0.4rem 0.6rem; border-radius: 4px;
+      cursor: pointer; font-size: 1.2rem;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; position: relative;
+      padding: 6rem 2rem 4rem; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(232,93,38,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 70%, rgba(58,123,213,0.05) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-logo-container {
+      position: relative; z-index: 1;
+      width: 300px; height: 300px;
+      margin-bottom: 0.5rem;
+    }
+    .hero-logo {
+      width: 100%; height: 100%; object-fit: contain;
+      filter: drop-shadow(0 0 30px rgba(201,168,76,0.2));
+      position: relative; z-index: 2;
+    }
+    .hero h1 {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 3.5rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 30%, var(--fire-glow) 60%, var(--gold-light) 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 4s linear infinite;
+      margin-bottom: 0.75rem; position: relative; z-index: 1; line-height: 1.2;
+    }
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+    .hero-subtitle {
+      font-family: 'Cinzel', serif; font-size: 1.3rem;
+      color: var(--text-secondary); font-weight: 400;
+      letter-spacing: 3px; margin-bottom: 2.5rem;
+      position: relative; z-index: 1;
+    }
+    .hero-cta {
+      display: flex; gap: 1rem;
+      position: relative; z-index: 1;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-dark));
+      background-size: 200% auto;
+      color: #0D0D0F; border: none;
+      padding: 0.9rem 2.5rem;
+      font-family: 'Cinzel', serif; font-size: 0.85rem;
+      font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; cursor: pointer;
+      border-radius: 4px; transition: all 0.4s; text-decoration: none;
+    }
+    .btn-primary:hover {
+      background-position: right center;
+      box-shadow: 0 0 30px rgba(201,168,76,0.4);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: transparent; color: var(--gold);
+      border: 1px solid var(--gold-dark);
+      padding: 0.9rem 2.5rem;
+      font-family: 'Cinzel', serif; font-size: 0.85rem;
+      font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; cursor: pointer;
+      border-radius: 4px; transition: all 0.4s; text-decoration: none;
+    }
+    .btn-secondary:hover {
+      background: rgba(201,168,76,0.1);
+      border-color: var(--gold); box-shadow: 0 0 20px rgba(201,168,76,0.15);
+    }
+    .hero-scroll {
+      position: absolute; bottom: 2rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      color: var(--text-muted);
+      font-family: 'Cinzel', serif; font-size: 0.65rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* ─── SECTIONS ─── */
+    .section {
+      padding: 5rem 2rem; position: relative; z-index: 1;
+    }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-tag {
+      font-family: 'Cinzel', serif; font-size: 0.7rem;
+      color: var(--fire-glow); letter-spacing: 4px;
+      text-transform: uppercase; margin-bottom: 0.75rem; display: block;
+    }
+    .section-title {
+      font-family: 'Cinzel Decorative', serif; font-size: 2.2rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 0.75rem;
+    }
+    .section-line {
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 0 auto 1rem;
+    }
+    .section-desc {
+      color: var(--text-secondary); font-size: 1.05rem;
+      max-width: 600px; margin: 0 auto; line-height: 1.6;
+    }
+
+    /* ─── NOTICE ─── */
+    .notice-banner {
+      background: linear-gradient(135deg, rgba(232,93,38,0.1), rgba(201,168,76,0.08));
+      border: 1px solid rgba(232,93,38,0.25); border-radius: 8px;
+      padding: 1.5rem 2rem; margin: 0 auto 3rem; max-width: 900px;
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .notice-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .notice-content h3 {
+      font-family: 'Cinzel', serif; font-size: 1rem;
+      color: var(--fire-glow); margin-bottom: 0.4rem; letter-spacing: 1px;
+    }
+    .notice-content p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+    .notice-content strong { color: var(--fire-glow); }
+
+    /* ─── BENEFITS ─── */
+    .benefits-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem; max-width: 1200px; margin: 0 auto;
+    }
+    .benefit-card {
+      background: var(--dark-card);
+      border: 1px solid var(--dark-border);
+      border-radius: 10px; padding: 2rem;
+      transition: all 0.4s; position: relative; overflow: hidden;
+    }
+    .benefit-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0; transition: opacity 0.4s;
+    }
+    .benefit-card:hover {
+      border-color: rgba(201,168,76,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .benefit-card:hover::before { opacity: 1; }
+    .benefit-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+    .benefit-title {
+      font-family: 'Cinzel', serif; font-size: 1rem;
+      color: var(--gold); margin-bottom: 0.5rem;
+    }
+    .benefit-desc { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ─── CATALOG ─── */
+    .catalog-wrap { max-width: 1300px; margin: 0 auto; }
+    .game-filters {
+      display: flex; gap: 0.5rem; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 2.5rem;
+    }
+    .filter-btn {
+      background: var(--dark-card); border: 1px solid var(--dark-border);
+      color: var(--text-secondary); padding: 0.6rem 1.4rem;
+      border-radius: 50px; cursor: pointer;
+      font-family: 'Cinzel', serif; font-size: 0.75rem;
+      letter-spacing: 1px; transition: all 0.3s;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .filter-btn:hover { border-color: var(--gold-dark); color: var(--gold); }
+    .filter-btn.active {
+      background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(232,93,38,0.1));
+      border-color: var(--gold); color: var(--gold);
+      box-shadow: 0 0 15px rgba(201,168,76,0.1);
+    }
+    .products-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .product-card {
+      background: var(--dark-card); border: 1px solid var(--dark-border);
+      border-radius: 12px; overflow: hidden;
+      transition: all 0.4s; display: flex; flex-direction: column;
+    }
+    .product-card:hover {
+      border-color: rgba(201,168,76,0.3);
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+    .product-img-area {
+      height: 180px; display: flex; align-items: center;
+      justify-content: center; font-size: 4rem;
+      position: relative; overflow: hidden;
+    }
+    .product-img-area img {
+      transition: transform 0.5s ease;
+    }
+    .product-card:hover .product-img-area img {
+      transform: scale(1.08);
+    }
+    /* ── CAROUSEL ── */
+    .carousel-container {
+      position: absolute; inset: 0; cursor: pointer;
+    }
+    .carousel-container img {
+      width: 100%; height: 100%; object-fit: cover;
+      position: absolute; inset: 0; opacity: 0;
+      transition: opacity 0.4s ease, transform 0.5s ease;
+    }
+    .carousel-container img.active { opacity: 1; }
+    .product-card:hover .carousel-container img.active { transform: scale(1.08); }
+    .carousel-btn {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(13,13,15,0.7); border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold); width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 4; font-size: 0.7rem;
+      opacity: 0; transition: opacity 0.3s;
+      backdrop-filter: blur(4px);
+    }
+    .product-card:hover .carousel-btn { opacity: 1; }
+    .carousel-btn:hover { background: rgba(201,168,76,0.3); }
+    .carousel-btn.prev { left: 6px; }
+    .carousel-btn.next { right: 6px; }
+    .carousel-dots {
+      position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 5px; z-index: 4;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .product-card:hover .carousel-dots { opacity: 1; }
+    .carousel-dots span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.35); transition: all 0.3s; cursor: pointer;
+    }
+    .carousel-dots span.active {
+      background: var(--gold); transform: scale(1.3);
+    }
+    /* ── LIGHTBOX ── */
+    .lightbox-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.92); backdrop-filter: blur(10px);
+      display: none; align-items: center; justify-content: center;
+      flex-direction: column; opacity: 0; transition: opacity 0.3s;
+    }
+    .lightbox-overlay.open { display: flex; opacity: 1; }
+    .lightbox-close {
+      position: absolute; top: 1rem; right: 1.5rem;
+      background: none; border: none; color: #fff; font-size: 2rem;
+      cursor: pointer; z-index: 10001; opacity: 0.7; transition: opacity 0.3s;
+    }
+    .lightbox-close:hover { opacity: 1; }
+    .lightbox-img-wrap {
+      position: relative; max-width: 90vw; max-height: 75vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lightbox-img-wrap img {
+      max-width: 90vw; max-height: 75vh; object-fit: contain;
+      border-radius: 8px; box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+    }
+    .lightbox-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold); width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1.2rem; transition: background 0.3s;
+    }
+    .lightbox-nav:hover { background: rgba(201,168,76,0.25); }
+    .lightbox-nav.prev { left: -60px; }
+    .lightbox-nav.next { right: -60px; }
+    @media (max-width: 768px) {
+      .lightbox-nav.prev { left: 8px; }
+      .lightbox-nav.next { right: 8px; }
+    }
+    .lightbox-counter {
+      color: rgba(255,255,255,0.6); font-size: 0.85rem;
+      margin-top: 1rem; font-family: 'Inter', sans-serif;
+    }
+    .lightbox-title {
+      color: var(--gold); font-family: 'Cinzel', serif;
+      font-size: 1rem; margin-top: 0.5rem; text-align: center;
+    }
+    .product-img-area::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 60px;
+      background: linear-gradient(to top, var(--dark-card), transparent);
+    }
+    .product-badge {
+      position: absolute; top: 0.75rem; right: 0.75rem;
+      background: rgba(13,13,15,0.85); backdrop-filter: blur(8px);
+      border: 1px solid var(--dark-border);
+      padding: 0.25rem 0.6rem; border-radius: 20px;
+      font-family: 'Cinzel', serif; font-size: 0.6rem;
+      color: var(--gold); letter-spacing: 1px;
+      text-transform: uppercase; z-index: 2;
+    }
+    .product-info {
+      padding: 1.25rem 1.5rem 1.5rem;
+      flex: 1; display: flex; flex-direction: column;
+    }
+    .product-name {
+      font-family: 'Cinzel', serif; font-size: 1rem;
+      color: var(--text-primary); margin-bottom: 0.4rem; font-weight: 600;
+    }
+    .product-desc {
+      color: var(--text-secondary); font-size: 0.85rem;
+      line-height: 1.5; margin-bottom: 1rem; flex: 1;
+    }
+    .product-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .product-price {
+      font-family: 'Cinzel', serif; font-size: 1.3rem;
+      font-weight: 700; color: var(--gold);
+    }
+    .add-btn {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      color: #0D0D0F; border: none;
+      padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer;
+      font-family: 'Cinzel', serif; font-size: 0.7rem;
+      font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; transition: all 0.3s;
+    }
+    .add-btn:hover { box-shadow: 0 0 20px rgba(201,168,76,0.4); transform: scale(1.05); }
+    .add-btn.added { background: linear-gradient(135deg, #2ECC71, #27AE60); }
+
+    /* ── CATALOG SEARCH ── */
+    .catalog-search-wrap { max-width: 500px; margin: 0 auto 1.5rem; }
+    .catalog-search {
+      width: 100%; padding: 0.85rem 1.2rem; background: var(--dark-card);
+      border: 1px solid var(--dark-border); border-radius: 50px;
+      color: var(--text-primary); font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+      outline: none; transition: all 0.3s;
+    }
+    .catalog-search:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(201,168,76,0.15); }
+    .catalog-search::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+    /* ── TYPE FILTERS ── */
+    .type-filters {
+      display: flex; gap: 0.4rem; justify-content: center;
+      flex-wrap: wrap; margin-bottom: 1rem;
+    }
+    .type-btn {
+      background: transparent; border: 1px solid var(--dark-border);
+      color: var(--text-secondary); padding: 0.4rem 0.9rem;
+      border-radius: 50px; cursor: pointer; font-size: 0.7rem;
+      letter-spacing: 0.5px; transition: all 0.3s;
+      font-family: 'DM Sans', sans-serif; font-weight: 600;
+    }
+    .type-btn:hover { border-color: var(--fire); color: var(--fire); }
+    .type-btn.active { background: rgba(232,93,38,0.15); border-color: var(--fire); color: #FF8C42; }
+
+    /* ── CATALOG COUNT ── */
+    .catalog-count {
+      text-align: center; margin-bottom: 1.5rem;
+      font-size: 0.78rem; color: var(--text-secondary); letter-spacing: 1px;
+    }
+
+    /* ── PRODUCT TYPE TAG ── */
+    .product-type-tag {
+      position: absolute; top: 0.75rem; left: 0.75rem;
+      padding: 0.2rem 0.6rem; border-radius: 6px;
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; z-index: 2;
+    }
+    .product-type-tag.organizer { background: rgba(102,187,106,0.2); color: #66bb6a; }
+    .product-type-tag.dice-tower { background: rgba(255,167,38,0.2); color: #ffa726; }
+    .product-type-tag.card-holder { background: rgba(79,195,247,0.2); color: #4fc3f7; }
+    .product-type-tag.insert { background: rgba(124,77,255,0.2); color: #7c4dff; }
+    .product-type-tag.token { background: rgba(255,213,79,0.2); color: #ffd54f; }
+    .product-type-tag.misc { background: rgba(239,83,80,0.2); color: #ef5350; }
+
+    /* ── PRODUCT FEATURES ── */
+    .product-features {
+      display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.8rem;
+    }
+    .product-features span {
+      font-size: 0.6rem; padding: 0.15rem 0.5rem;
+      background: rgba(255,255,255,0.05); border-radius: 4px;
+      color: var(--text-secondary); letter-spacing: 0.3px;
+    }
+    .product-price-range {
+      font-family: 'Cinzel', serif; font-size: 1rem;
+      font-weight: 700; color: var(--gold);
+    }
+    /* ── OWN PRODUCT BADGE ── */
+    .product-own-badge {
+      position: absolute; top: 0.75rem; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, rgba(201,168,76,0.9), rgba(232,93,38,0.9));
+      color: #fff; padding: 0.2rem 0.7rem; border-radius: 20px;
+      font-family: 'Cinzel', serif; font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase; z-index: 3;
+      box-shadow: 0 2px 10px rgba(201,168,76,0.4);
+    }
+    .product-card.own-product { border-color: rgba(201,168,76,0.25); }
+    .product-card.own-product:hover { border-color: rgba(201,168,76,0.5); box-shadow: 0 12px 40px rgba(201,168,76,0.15); }
+
+    /* ─── CART DRAWER ─── */
+    .cart-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); z-index: 2000;
+      opacity: 0; visibility: hidden; transition: all 0.3s;
+    }
+    .cart-overlay.open { opacity: 1; visibility: visible; }
+    .cart-drawer {
+      position: fixed; top: 0; right: -450px;
+      width: 420px; max-width: 90vw; height: 100vh;
+      background: var(--dark-surface);
+      border-left: 1px solid var(--dark-border);
+      z-index: 2001; display: flex; flex-direction: column;
+      transition: right 0.4s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: -20px 0 60px rgba(0,0,0,0.5);
+    }
+    .cart-drawer.open { right: 0; }
+    .cart-header {
+      padding: 1.5rem; border-bottom: 1px solid var(--dark-border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cart-header h2 {
+      font-family: 'Cinzel Decorative', serif; font-size: 1.2rem; color: var(--gold);
+    }
+    .cart-close {
+      background: none; border: none; color: var(--text-secondary);
+      font-size: 1.5rem; cursor: pointer; transition: color 0.3s;
+    }
+    .cart-close:hover { color: var(--fire); }
+    .cart-items { flex: 1; overflow-y: auto; padding: 1rem 1.5rem; }
+    .cart-empty {
+      text-align: center; padding: 3rem 1rem; color: var(--text-muted);
+    }
+    .cart-empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .cart-empty p { font-family: 'Cinzel', serif; }
+    .cart-item {
+      display: flex; gap: 1rem; padding: 1rem 0;
+      border-bottom: 1px solid rgba(42,42,50,0.5);
+      align-items: center;
+    }
+    .cart-item-icon {
+      font-size: 2rem; width: 50px; height: 50px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--dark-card); border-radius: 8px; flex-shrink: 0;
+    }
+    .cart-item-details { flex: 1; }
+    .cart-item-name {
+      font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--text-primary);
+    }
+    .cart-item-game {
+      font-size: 0.7rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .cart-item-controls {
+      display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;
+    }
+    .qty-btn {
+      background: var(--dark-bg); border: 1px solid var(--dark-border);
+      color: var(--text-primary); width: 28px; height: 28px;
+      border-radius: 4px; cursor: pointer; font-size: 0.9rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .qty-btn:hover { border-color: var(--gold-dark); color: var(--gold); }
+    .qty-value {
+      font-family: 'Cinzel', serif; font-size: 0.9rem;
+      min-width: 24px; text-align: center; color: var(--gold);
+    }
+    .remove-btn {
+      background: none; border: none; color: var(--text-muted);
+      cursor: pointer; font-size: 0.75rem; transition: color 0.2s;
+    }
+    .remove-btn:hover { color: var(--fire); }
+    .cart-item-price {
+      font-family: 'Cinzel', serif; font-size: 1rem;
+      color: var(--gold); font-weight: 600; text-align: right;
+    }
+    .cart-footer {
+      padding: 1.5rem; border-top: 1px solid var(--dark-border);
+      background: var(--dark-card);
+    }
+    .cart-notice {
+      background: rgba(232,93,38,0.06);
+      border: 1px solid rgba(232,93,38,0.15);
+      border-radius: 6px; padding: 0.5rem 0.65rem;
+      margin-bottom: 0.75rem; font-size: 0.7rem;
+      color: var(--text-muted); line-height: 1.4;
+    }
+    .cart-notice strong { color: var(--fire-glow); }
+    .cart-total {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 1rem;
+    }
+    .cart-total-label {
+      font-family: 'Cinzel', serif; font-size: 0.9rem;
+      color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase;
+    }
+    .cart-total-value {
+      font-family: 'Cinzel Decorative', serif; font-size: 1.5rem; color: var(--gold);
+    }
+    .checkout-wa {
+      width: 100%; background: linear-gradient(135deg, #25D366, #128C7E);
+      color: white; border: none; padding: 0.9rem; border-radius: 8px;
+      cursor: pointer; font-family: 'Cinzel', serif;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; transition: all 0.3s;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .checkout-wa:hover { box-shadow: 0 0 25px rgba(37,211,102,0.3); transform: translateY(-1px); }
+    .checkout-ig {
+      width: 100%; background: linear-gradient(135deg, #833AB4, #E1306C, #F77737);
+      color: white; border: none; padding: 0.9rem; border-radius: 8px;
+      cursor: pointer; font-family: 'Cinzel', serif;
+      font-size: 0.8rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; transition: all 0.3s;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .checkout-ig:hover { box-shadow: 0 0 25px rgba(225,48,108,0.3); transform: translateY(-1px); }
+
+    /* ─── CONTACT ─── */
+    .contact-wrap { max-width: 700px; margin: 0 auto; }
+    .contact-form { display: flex; flex-direction: column; gap: 1.25rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-label {
+      font-family: 'Cinzel', serif; font-size: 0.75rem;
+      color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase;
+    }
+    .form-input, .form-textarea, .form-select {
+      background: var(--dark-card); border: 1px solid var(--dark-border);
+      color: var(--text-primary); padding: 0.8rem 1rem;
+      border-radius: 6px; font-family: 'Crimson Pro', serif;
+      font-size: 1rem; transition: all 0.3s; outline: none;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--gold-dark);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+    }
+    .form-textarea { resize: vertical; min-height: 120px; }
+    .form-select {
+      cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239B978F' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 1rem center;
+    }
+    .form-submit-wrap { text-align: center; margin-top: 0.5rem; }
+    .form-success {
+      text-align: center; padding: 2rem; color: var(--gold);
+    }
+    .form-success-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      background: var(--dark-card);
+      border-top: 1px solid var(--dark-border);
+      padding: 3rem 2rem 1.5rem; position: relative; z-index: 1;
+    }
+    .footer-content {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr;
+      gap: 2rem; margin-bottom: 2rem;
+    }
+    .footer-brand-name {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 1.2rem; color: var(--gold); margin-bottom: 0.75rem;
+    }
+    .footer-brand-desc {
+      color: var(--text-secondary); font-size: 0.9rem;
+      line-height: 1.6; margin-bottom: 1rem;
+    }
+    .footer-social { display: flex; gap: 0.75rem; }
+    .social-link {
+      width: 40px; height: 40px;
+      border: 1px solid var(--dark-border); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 1.1rem; transition: all 0.3s;
+    }
+    .social-link:hover {
+      border-color: var(--gold-dark); color: var(--gold);
+      background: rgba(201,168,76,0.05);
+    }
+    .footer-heading {
+      font-family: 'Cinzel', serif; font-size: 0.75rem;
+      color: var(--gold); letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-links a {
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 0.9rem; transition: color 0.3s; cursor: pointer;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-bottom {
+      border-top: 1px solid var(--dark-border);
+      padding-top: 1.5rem; text-align: center;
+      color: var(--text-muted); font-size: 0.8rem;
+    }
+
+    /* ─── TOAST ─── */
+    .toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--dark-card); border: 1px solid var(--gold-dark);
+      color: var(--gold); padding: 0.75rem 1.5rem;
+      border-radius: 8px; font-family: 'Cinzel', serif;
+      font-size: 0.85rem; z-index: 3000; opacity: 0;
+      transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5); pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    /* ─── TABLET ─── */
+    @media (max-width: 1024px) {
+      .hero-logo-container { width: 250px; height: 250px; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    }
+    /* ─── MOBILE ─── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: block; }
+      .hero { padding: 100px 1rem 2rem; min-height: auto; }
+      .hero h1 { font-size: 2rem; }
+      .hero-subtitle { font-size: 0.9rem; letter-spacing: 1px; }
+      .hero-logo-container { width: 200px; height: 200px; }
+      .section-title { font-size: 1.4rem; }
+      .container { padding: 0 1rem; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .product-img-area { height: 140px; }
+      .product-info { padding: 0.75rem 0.85rem 1rem; }
+      .product-name { font-size: 0.8rem; }
+      .product-desc { font-size: 0.75rem; line-height: 1.4; margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+      .product-features span { font-size: 0.6rem; padding: 0.15rem 0.4rem; }
+      .product-price { font-size: 1rem; }
+      .add-btn { font-size: 0.7rem; padding: 0.4rem 0.8rem; }
+      .product-badge { font-size: 0.5rem; padding: 0.15rem 0.4rem; top: 0.4rem; right: 0.4rem; }
+      .product-type-tag { font-size: 0.5rem; padding: 0.15rem 0.4rem; }
+      .product-own-badge { font-size: 0.45rem; padding: 0.15rem 0.5rem; top: 0.4rem; }
+      .carousel-btn { width: 24px; height: 24px; font-size: 0.6rem; }
+      .carousel-dots span { width: 5px; height: 5px; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-content { grid-template-columns: 1fr; }
+      .hero-cta { flex-direction: column; align-items: center; gap: 0.75rem; }
+      .benefits-grid { grid-template-columns: 1fr; }
+      .notice-banner { flex-direction: column; }
+      .catalog-search { font-size: 0.85rem; padding: 0.6rem 1rem; }
+      .game-filters { gap: 0.3rem; }
+      .game-btn { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
+      .type-filters { gap: 0.3rem; }
+      .type-btn { font-size: 0.7rem; padding: 0.3rem 0.6rem; }
+    }
+    @media (max-width: 480px) {
+      .hero-logo-container { width: 160px; height: 160px; }
+      .hero h1 { font-size: 1.5rem; }
+      .hero-subtitle { font-size: 0.8rem; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+      .product-img-area { height: 120px; }
+      .product-info { padding: 0.6rem 0.7rem 0.8rem; }
+      .product-name { font-size: 0.75rem; }
+      .product-desc { font-size: 0.7rem; -webkit-line-clamp: 2; }
+      .product-features { display: none; }
+      .product-price { font-size: 0.9rem; }
+      .add-btn { font-size: 0.65rem; padding: 0.35rem 0.6rem; }
+      .btn-primary, .btn-secondary { font-size: 0.8rem; padding: 0.7rem 1.5rem; width: 100%; text-align: center; }
+      .section-title { font-size: 1.2rem; }
+    }
+
+    /* ─── FADE IN OBSERVER ─── */
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ PARTICLES ═══ -->
+  <div class="bg-particles" id="particles"></div>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="navbar" id="navbar">
+    <a class="nav-logo" onclick="scrollToSection('hero')">
+      <img src="logo.png" alt="Forja Arcana 3D">
+      <span class="nav-logo-text">Forja Arcana 3D</span>
+    </a>
+    <ul class="nav-links">
+      <li><a onclick="scrollToSection('beneficios')">Nosotros</a></li>
+      <li><a onclick="scrollToSection('catalogo')">Catálogo</a></li>
+      <li><a onclick="scrollToSection('contacto')">Contacto</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="cart-btn" onclick="toggleCart()">
+        🛒 Carrito <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+      </button>
+      <button class="mobile-menu-btn" onclick="toggleCart()">☰</button>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero" id="hero">
+    <div class="hero-logo-container">
+      <img src="logo.png" alt="Forja Arcana 3D" class="hero-logo">
+    </div>
+    <h1>Forja Arcana 3D</h1>
+    <p class="hero-subtitle">Artefactos dignos de partidas épicas</p>
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="scrollToSection('catalogo')">Explorar Catálogo</button>
+      <button class="btn-secondary" onclick="scrollToSection('contacto')">Pedido Especial</button>
+    </div>
+    <div class="hero-scroll"><span>Descubre</span><span>▾</span></div>
+  </section>
+
+  <!-- ═══ BENEFITS ═══ -->
+  <section class="section" id="beneficios">
+    <div class="section-header fade-in">
+      <span class="section-tag">¿Por qué elegirnos?</span>
+      <h2 class="section-title">La Forja de la Excelencia</h2>
+      <div class="section-line"></div>
+      <p class="section-desc">Cada pieza que sale de nuestra forja está diseñada para transformar tus partidas en experiencias inolvidables.</p>
+    </div>
+    <div class="benefits-grid" id="benefitsGrid"></div>
+  </section>
+
+  <!-- ═══ CATALOG ═══ -->
+  <section class="section" id="catalogo">
+    <div class="section-header fade-in">
+      <span class="section-tag">Nuestras creaciones</span>
+      <h2 class="section-title">Catálogo de Artefactos</h2>
+      <div class="section-line"></div>
+      <p class="section-desc">Accesorios impresos en 3D para elevar cada juego de mesa a su máximo potencial.</p>
+    </div>
+    <div class="catalog-wrap">
+      <div class="catalog-search-wrap">
+        <input type="text" id="catalogSearch" class="catalog-search" placeholder="🔍 Buscar accesorio, juego o tipo...">
+      </div>
+      <div class="type-filters" id="typeFilters"></div>
+      <div class="game-filters" id="gameFilters"></div>
+      <div class="catalog-count" id="catalogCount"></div>
+      <div class="products-grid" id="productsGrid"></div>
+    </div>
+  </section>
+
+  <!-- ═══ CONTACT ═══ -->
+  <section class="section" id="contacto">
+    <div class="section-header fade-in">
+      <span class="section-tag">¿Necesitas algo especial?</span>
+      <h2 class="section-title">Contacto & Pedidos Especiales</h2>
+      <div class="section-line"></div>
+      <p class="section-desc">¿Buscas un accesorio para un juego que no está en el catálogo? ¿Necesitas una personalización? Cuéntanos tu idea y la forjaremos para ti.</p>
+    </div>
+    <div class="contact-wrap">
+      <div class="contact-form" id="contactForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nombre</label>
+            <input class="form-input" id="cName" placeholder="Tu nombre">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" id="cEmail" type="email" placeholder="tu@email.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Juego de Mesa</label>
+          <select class="form-select" id="cGame">
+            <option value="">Selecciona un juego (opcional)</option>
+            <option>Catan</option>
+            <option>Carcassonne</option>
+            <option>Brass</option>
+            <option>Terraforming Mars</option>
+            <option>Scythe</option>
+            <option>Otro juego</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tu Mensaje</label>
+          <textarea class="form-textarea" id="cMsg" placeholder="Describe tu pedido especial, idea o consulta..."></textarea>
+        </div>
+        <div class="form-submit-wrap">
+          <button class="btn-primary" onclick="sendContact()">Enviar por WhatsApp</button>
+        </div>
+      </div>
+      <div class="form-success" id="formSuccess" style="display:none">
+        <div class="form-success-icon">✨</div>
+        <h3 style="font-family:'Cinzel',serif;margin-bottom:0.5rem">¡Mensaje Enviado!</h3>
+        <p style="color:var(--text-secondary)">Te redirigimos a WhatsApp para completar tu consulta.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div>
+        <div class="footer-brand-name">Forja Arcana 3D</div>
+        <p class="footer-brand-desc">Artefactos impresos en 3D para elevar tus juegos de mesa. Cada pieza es una obra artesanal forjada con pasión y precisión.</p>
+        <div class="footer-social">
+          <a class="social-link" href="https://www.instagram.com/forja.arcana.3d?igsh=MWNhZzFpcHg4YzB1ZQ==" target="_blank" title="Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          </a>
+          <a class="social-link" href="https://wa.me/593984328890" target="_blank" title="WhatsApp">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          </a>
+          <a class="social-link" href="https://facebook.com/forjaarcana3d" target="_blank" title="Facebook">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-heading">Navegación</h4>
+        <ul class="footer-links">
+          <li><a onclick="scrollToSection('hero')">Inicio</a></li>
+          <li><a onclick="scrollToSection('beneficios')">Nosotros</a></li>
+          <li><a onclick="scrollToSection('catalogo')">Catálogo</a></li>
+          <li><a onclick="scrollToSection('contacto')">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="footer-heading">Juegos</h4>
+        <ul class="footer-links" id="footerGames"></ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Forja Arcana 3D — Artefactos dignos de partidas épicas</p>
+    </div>
+  </footer>
+
+  <!-- ═══ CART OVERLAY ═══ -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+
+  <!-- ═══ CART DRAWER ═══ -->
+  <div class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <h2>🛒 Tu Carrito</h2>
+      <button class="cart-close" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-notice">
+        ⚠️ <strong>Elaboración bajo pedido.</strong> El tiempo de entrega varía según cantidad y complejidad. Te confirmaremos el plazo al procesar tu orden.
+      </div>
+      <div class="cart-total">
+        <span class="cart-total-label">Total</span>
+        <span class="cart-total-value" id="cartTotal">$0.00</span>
+      </div>
+      <button class="checkout-wa" onclick="checkoutWhatsApp()">💬 Pedir por WhatsApp</button>
+      <button class="checkout-ig" onclick="checkoutIG()">📷 Pedir por Instagram</button>
+    </div>
+  </div>
+
+  <!-- ═══ TOAST ═══ -->
+  <div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIGURATION — Edit these values with your real info
+// ═══════════════════════════════════════════════════════════
+const CONFIG = {
+  whatsapp: '593984328890',   // ← Tu número de WhatsApp con código de país
+  instagram: 'forjaarcana3d',  // ← Tu handle de Instagram
+};
+
+// ═══════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════
+const GAMES = [
+  { id:'all', name:'Todos', icon:'⚔️' },
+  { id:'catan', name:'Catan', icon:'🏝️' },
+  { id:'carcassonne', name:'Carcassonne', icon:'🏰' },
+  { id:'brass-birm', name:'Brass: Birmingham', icon:'⚙️' },
+  { id:'terraforming', name:'Terraforming Mars', icon:'🔴' },
+  { id:'ticket', name:'Ticket to Ride', icon:'🚂' },
+  { id:'7wonders', name:'7 Wonders', icon:'🏛️' },
+  { id:'splendor', name:'Splendor', icon:'💎' },
+  { id:'pandemic', name:'Pandemic', icon:'🦠' },
+  { id:'dixit', name:'Dixit', icon:'🎨' },
+  { id:'exploding', name:'Exploding Kittens', icon:'🐱' },
+  { id:'arknova', name:'Ark Nova', icon:'🦁' },
+  { id:'brass-lanc', name:'Brass: Lancashire', icon:'🏭' },
+  { id:'scythe', name:'Scythe', icon:'⚔️' },
+  { id:'everdell', name:'Everdell', icon:'🌳' },
+  { id:'gloomjaws', name:'Gloomhaven JotL', icon:'🦁' },
+  { id:'anachrony', name:'Anachrony', icon:'⏳' },
+  { id:'clank', name:'Clank!', icon:'🐉' },
+  { id:'dune', name:'Dune: Imperium', icon:'🏜️' },
+  { id:'starwars', name:'Star Wars Rebellion', icon:'⭐' },
+  { id:'wotr', name:'War of the Ring', icon:'💍' },
+  { id:'bloodrage', name:'Blood Rage', icon:'🪓' },
+  { id:'wingspan', name:'Wingspan', icon:'🐦' },
+  { id:'dnd', name:'Dungeons & Dragons', icon:'🐲' },
+  { id:'gloomhaven', name:'Gloomhaven', icon:'🗡️' },
+];
+
+const TYPES = [
+  { id:'all', name:'Todos', icon:'🔥' },
+  { id:'organizer', name:'Organizador', icon:'📦' },
+  { id:'insert', name:'Insert / Inlay', icon:'🗃️' },
+  { id:'dice-tower', name:'Torre de Dados', icon:'🎲' },
+  { id:'card-holder', name:'Porta-Cartas', icon:'🃏' },
+  { id:'token', name:'Trofeo / Accesorio', icon:'🏆' },
+  { id:'misc', name:'Especial', icon:'✨' },
+];
+
+const PRODUCTS = [
+  // ══════ PRODUCTOS FORJA ARCANA (con foto) ══════
+  { id:1, name:'Organizador Catan Colonos', game:'catan', type:'organizer', price:10, desc:'Organizador 3D para figuras y cartas de Catan Base + Navegantes. Espacios para 15 caminos, 15 barcos, 4 ciudades, 5 asentamientos y 5 tipos de cartas. V2 compatible con fundas.', features:['Base + Navegantes','Compatible fundas','V2 optimizado'], color:'#D4A843', img:['img/catan-org-colonos.jpg','img/catan-org-colonos-2.jpg'], own:true },
+  { id:2, name:'Caja para Guardar Catan', game:'catan', type:'organizer', price:18, desc:'Caja de almacenamiento para guardar todos los organizadores y componentes de Catan. Protege y mantiene todo en su lugar.', features:['Almacenamiento','Protección','Compacto'], color:'#8B6914', img:'img/catan-org-colonos-caja.jpg', own:true },
+  { id:3, name:'Set Completo Caja + Organizadores Catan', game:'catan', type:'organizer', price:50, desc:'Pack completo: caja de almacenamiento + 4 organizadores individuales para Catan Base y Navegantes. La solución definitiva.', features:['Caja + 4 org.','Base + Navegantes','Set completo'], color:'#C45A2C', img:['img/catan-org-colonos-caja.jpg','img/catan-org-colonos.jpg','img/catan-org-colonos-2.jpg'], own:true },
+  { id:4, name:'Organizador Catan Caballeros', game:'catan', type:'organizer', price:8, desc:'Organizador 3D para Catan Caballeros. Compartimentos etiquetados para caballeros, cascos, ciudades, muros, caminos y cartas.', features:['Caballeros','Etiquetado','1 color'], color:'#6B4E2A', img:['img/catan-org-caballeros.jpg','img/catan-org-caballeros-3.jpg','img/catan-org-caballeros-4.jpg'], own:true },
+  { id:5, name:'Organizador Catan Caballeros Bicolor', game:'catan', type:'organizer', price:15, desc:'Versión premium del organizador Catan Caballeros con impresión a dos colores. Compartimentos etiquetados para todas las piezas.', features:['Caballeros','2 colores','Premium'], color:'#A0522D', img:['img/catan-org-caballeros-2.jpg','img/catan-org-caballeros-3.jpg','img/catan-org-caballeros-4.jpg'], own:true },
+  { id:6, name:'Organizador Catan + Navegantes', game:'catan', type:'organizer', price:10, desc:'Organizador para Catan Base + expansión Navegantes. V2 con dos filas amplias para cartas sin divisor central, compatible con fundas.', features:['Base + Navegantes','V2 sin divisor','Compatible fundas'], color:'#D4A843', img:['img/catan-org-navegantes-1.jpg','img/catan-org-navegantes-2.jpg','img/catan-org-navegantes-3.jpg'], own:true },
+  { id:7, name:'Trofeo Camino Más Largo (1 color)', game:'catan', type:'token', price:7.50, desc:'Trofeo 3D que reemplaza la carta original. Premio físico visible que aporta presencia visual y emoción competitiva a la partida.', features:['1 color','Reemplaza carta','Decorativo'], color:'#2C2C2C', img:['img/catan-trofeo.jpg','img/catan-trofeo-2.jpg'], own:true },
+  { id:8, name:'Trofeo Camino Más Largo (4 colores)', game:'catan', type:'token', price:12, desc:'Versión multicolor del trofeo impreso en 4 colores con AMS. Mayor detalle y presencia visual en la mesa.', features:['4 colores','AMS multicolor','Premium'], color:'#5B2C6F', img:['img/catan-trofeo-2.jpg','img/catan-trofeo.jpg'], own:true },
+  { id:9, name:'Combo 2 Trofeos Catan (1 color)', game:'catan', type:'token', price:10, desc:'Pack de 2 trofeos: "Camino Más Largo" + "Ejército Más Grande" en 1 color. Premios físicos épicos.', features:['2 trofeos','Combo','1 color'], color:'#34495E', img:['img/catan-trofeo-combo.jpg','img/catan-trofeo.jpg','img/catan-trofeo-2.jpg'], own:true },
+  { id:10, name:'Combo 2 Trofeos Catan (4 colores)', game:'catan', type:'token', price:20, desc:'Pack premium de 2 trofeos multicolor impresos en 4 colores con AMS para máximo detalle.', features:['2 trofeos','4 colores','AMS'], color:'#7D3C98', img:['img/catan-trofeo-combo.jpg','img/catan-trofeo-2.jpg','img/catan-trofeo.jpg'], own:true },
+  { id:11, name:'Caja Libro Carcassonne', game:'carcassonne', type:'organizer', price:50, desc:'Elegante caja con diseño de libro para tu estantería. Cierre magnético firme. La tapa se convierte en tablero de puntuación.', features:['Diseño libro','Cierre magnético','Tablero puntuación'], color:'#7D6B5D', img:['img/carcassonne-libro.jpg','img/carcassonne-libro-2.jpg','img/carcassonne-libro-3.jpg','img/carcassonne-libro-4.jpg'], own:true },
+  { id:12, name:'Meeples Personalizados (Individual)', game:'carcassonne', type:'misc', price:7.99, desc:'10 meeples como figuras humanas realistas para 1 jugador. 6+ modelos con versiones masculinas y femeninas. Altura ~1.1 pulgadas.', features:['1 jugador','10 figuras','6+ modelos'], color:'#E74C3C', img:['img/carcassonne-meeples-1.jpg','img/carcassonne-meeples-2.jpg','img/carcassonne-meeples-3.jpg','img/carcassonne-meeples-4.jpg'], own:true },
+  { id:13, name:'Meeples Personalizados (Base 4 jug.)', game:'carcassonne', type:'misc', price:28.99, desc:'40 meeples personalizados para 4 jugadores en 4 colores. Figuras realistas con versiones masculinas y femeninas.', features:['4 jugadores','40 figuras','4 colores'], color:'#C0392B', img:['img/carcassonne-meeples-3.jpg','img/carcassonne-meeples-1.jpg','img/carcassonne-meeples-4.jpg'], own:true },
+  { id:14, name:'Meeples Personalizados (Deluxe 6 jug.)', game:'carcassonne', type:'misc', price:41.99, desc:'Set completo de 60 meeples para 6 jugadores en 6 colores. La experiencia definitiva de Carcassonne con figuras premium.', features:['6 jugadores','60 figuras','Deluxe'], color:'#8E44AD', img:['img/carcassonne-meeples-2.jpg','img/carcassonne-meeples-1.jpg','img/carcassonne-meeples-3.jpg','img/carcassonne-meeples-4.jpg'], own:true },
+  { id:15, name:'Cuadrículas 3x3 (Pack 10)', game:'carcassonne', type:'misc', price:20, desc:'10 módulos de cuadrícula 3x3 para mantener losetas firmes y alineadas. Diseño modular. Incluye soporte Meeple.', features:['10 cuadrículas','Modular','Soporte Meeple'], color:'#5D6D7E', img:['img/carcassonne-grid-1.jpg','img/carcassonne-grid-2.jpg','img/carcassonne-grid-3.jpg'], own:true },
+  { id:16, name:'Cuadrículas 3x3 (Pack 20)', game:'carcassonne', type:'misc', price:32, desc:'20 módulos de cuadrícula 3x3 para Carcassonne. Ideal para partidas con expansiones.', features:['20 cuadrículas','Para expansiones','Ampliable'], color:'#34495E', img:['img/carcassonne-grid-4.jpg','img/carcassonne-grid-1.jpg','img/carcassonne-grid-5.jpg'], own:true },
+  { id:17, name:'Cuadrículas 3x3 (Pack 40)', game:'carcassonne', type:'misc', price:60, desc:'Pack completo de 40 cuadrículas 3x3. Para partidas masivas con múltiples expansiones.', features:['40 cuadrículas','Set completo'], color:'#2C3E50', img:['img/carcassonne-grid-5.jpg','img/carcassonne-grid-4.jpg','img/carcassonne-grid-1.jpg'], own:true },
+  { id:18, name:'Torre Dispensador de Losetas', game:'carcassonne', type:'organizer', price:12, desc:'Dispensador de losetas para Carcassonne y Karak. Partidas más cómodas, rápidas y divertidas.', features:['Carcassonne + Karak','Dispensador','Funcional'], color:'#A0522D', img:['img/carcassonne-torre.jpg','img/carcassonne-torre-2.jpg'], own:true },
+  { id:19, name:'Organizador Completo Brass: Birmingham', game:'brass-birm', type:'insert', price:45, desc:'Organizador 3D premium. Sin lid-lift, ajuste firme, compatible fundas. Bandejas por jugador, mazos por nº jugadores, bandeja monedas, bandejas carbón/hierro/cerveza.', features:['Premium','Bandejas jugador','Compatible fundas','Sin lid-lift'], color:'#C9A84C', img:['img/brass-org-1.jpg','img/brass-org-2.jpg','img/brass-org-3.jpg','img/brass-org-4.jpg','img/brass-org-5.jpg','img/brass-org-6.jpg'], own:true },
+  { id:20, name:'Organizador Terraforming Mars', game:'terraforming', type:'insert', price:50, desc:'Organizador completo para 5-6 jugadores. Caja de cartas, soporte corporaciones, fichas cartón y 3D, 4 compartimentos tokens y bandeja de dinero.', features:['5-6 jugadores','Fichas 3D','Bandeja dinero','Completo'], color:'#E74C3C', img:['img/terraforming-org-1.jpg','img/terraforming-org-2.jpg','img/terraforming-org-3.jpg'], own:true },
+
+  // ══════ CATÁLOGO MAKERWORLD ══════
+  { id:100, name:'Settlers of Catan: Complete Seafarers Edition', game:'catan', type:'organizer', price:15, desc:'Set completo del juego Catan con expansión Seafarers en 3D. Incluye todas las piezas, hexágonos y bordes rediseñados para impresión 3D.', features:['Juego completo','Seafarers','Multicolor'], color:'#D4A843', img:'img/catan-seafarers-1.jpg' },
+  { id:101, name:'Catan Card Holder V1', game:'catan', type:'card-holder', price:2, desc:'Porta-cartas elegante para Catan que mantiene tus cartas de recurso organizadas y visibles durante el juego.', features:['Porta-cartas','Fácil acceso','Compacto'], color:'#D4A843', img:'img/catan-cardholder-1.jpg' },
+  { id:102, name:'Catan Foldable/Collapsible Dice Tower', game:'catan', type:'dice-tower', price:3, desc:'Torre de dados plegable con temática medieval de Catan. Superficie de adoquín y muros de piedra. Modelo print-in-place.', features:['Plegable','Print-in-place','Temática medieval'], color:'#D4A843', img:'img/catan-dicetower-fold-1.jpg' },
+  { id:103, name:'Catan Dice Tower (Hexagonal)', game:'catan', type:'dice-tower', price:4, desc:'Torre de dados con base hexagonal que encaja perfectamente reemplazando un tile de agua o desierto en el tablero de Catan.', features:['Base hexagonal','Encaja en tablero','Multicolor'], color:'#D4A843', img:'img/catan-dicetower-hex-1.jpg' },
+  { id:104, name:'Inserts for Catan Base Game - 5-6 Player Expansion', game:'catan', type:'insert', price:5, desc:'Insertos organizadores para el juego base de Catan y la expansión de 5-6 jugadores. Cabe en la caja original.', features:['Base + Expansión','Caja original','5-6 jugadores'], color:'#D4A843', img:'img/catan-inserts-1.jpg' },
+  { id:105, name:'Catan Numbers Token Tube', game:'catan', type:'token', price:1, desc:'Organizador tubular para los tokens numéricos de Catan con ranura para facilitar la inserción y extracción.', features:['Base + Extended','Compacto','Fácil acceso'], color:'#D4A843', img:'img/catan-tokentube-1.jpg' },
+  { id:106, name:'CATAN 6th Edition Player Piece Organisers', game:'catan', type:'organizer', price:3, desc:'Organizador de piezas de jugador para la nueva 6ta edición. Bandejas para caminos, asentamientos y ciudades.', features:['6ta Edición','Caja original','AMS multicolor'], color:'#D4A843', img:'img/catan-playerorg-1.jpg' },
+  { id:107, name:'Catan Box Organizer (US Edition)', game:'catan', type:'insert', price:6, desc:'Set completo de cajas e insertos para organizar Catan en la caja original. Para juego base + expansión 5-6 jugadores. Incluye archivos Fusion360.', features:['US Edition','Base + 5-6','Fusion360 editable'], color:'#D4A843', img:'img/catan-boxorg-1.jpg' },
+  { id:108, name:'CATAN Digital Dice – ESP32', game:'catan', type:'misc', price:10, desc:'Dado digital inteligente con ESP32. Estadísticas en tiempo real, soporte para expansiones, alimentado por batería. Se encaja en el tablero.', features:['Electrónico','ESP32','Estadísticas','Batería'], color:'#D4A843', img:'img/catan-digdice-1.jpg' },
+  { id:109, name:'Modular Carcassonne Organizer', game:'carcassonne', type:'organizer', price:5, desc:'Organizador modular para juego base y 5-8 expansiones. Elementos se agregan paso a paso. Incluye porta-cartas, separadores, porta-meeples y porta-bienes.', features:['Modular','5-8 expansiones','Porta-meeples'], color:'#7D6B5D', img:'img/carcassonne-modorg-1.jpg' },
+  { id:110, name:'Carcassonne Organizer / Box Insert', game:'carcassonne', type:'insert', price:4, desc:'Inserto personalizado para Carcassonne primera edición. Filas de tiles personalizables con divisores incluidos. Compatible con A1 Mini.', features:['Primera edición','A1 Mini compatible','Divisores'], color:'#7D6B5D', img:'img/carcassonne-boxinsert-1.jpg' },
+  { id:111, name:'Carcassonne Tower Tile Dispenser', game:'carcassonne', type:'misc', price:4, desc:'Torre dispensadora de tiles para Carcassonne. Almacena y distribuye tiles de forma temática.', features:['Dispensador','Torre temática','Funcional'], color:'#7D6B5D', img:'img/carcassonne-towermw-1.jpg' },
+  { id:112, name:'Ultimate Carcassonne Tile Grid Holder', game:'carcassonne', type:'misc', price:3, desc:'Cuadrícula definitiva para sujetar los tiles de Carcassonne durante el juego. Compatible también con Karak.', features:['Grid holder','Compatible Karak','Popular'], color:'#7D6B5D', img:'img/carcassonne-gridmw-1.jpg' },
+  { id:113, name:'Carcassonne Modular Travel/Play/Store Box', game:'carcassonne', type:'organizer', price:8, desc:'Caja multifuncional: transporte, juego y almacenamiento. Estantes, cajones, dispensador integrado. Incluye PDF de marcador.', features:['Travel box','Dispensador','Cajones','Marcador PDF'], color:'#7D6B5D', img:'img/carcassonne-travelbox-1.jpg' },
+  { id:114, name:'Carcassonne Tile Grids with Holder', game:'carcassonne', type:'misc', price:2, desc:'Cuadrículas para tiles con soporte. Mantiene el tablero organizado durante la partida.', features:['Grid','Holder incluido','Práctico'], color:'#7D6B5D', img:'img/carcassonne-gridhold-1.jpg' },
+  { id:115, name:'Carcassonne Game Insert / Organizer', game:'carcassonne', type:'insert', price:5, desc:'Insert con espacio etiquetado para tiles de juego base y 2 primeras expansiones (Inns & Cathedrals, Traders & Builders). Con texto AMS.', features:['Base + 2 exp.','Etiquetado','AMS bicolor'], color:'#7D6B5D', img:'img/carcassonne-gameinsert-1.jpg' },
+  { id:116, name:'Ticket to Ride Insert / Organizer (USA)', game:'ticket', type:'insert', price:5, desc:'Insert completo cortado en 4 piezas unidas con dowels impresos. Compartimento secreto para trenes extra. Porta-cartas incluido.', features:['4 piezas + dowels','Sin soportes','Compartimento secreto'], color:'#C0392B', img:'img/ttr-org-usa-1.jpg' },
+  { id:117, name:'Ticket to Ride EUROPE Insert / Organizer', game:'ticket', type:'insert', price:5, desc:'Versión para Europa con apertura mayor (57x89mm) para cartas grandes y espacio más profundo para el mapa.', features:['Versión Europa','Cartas grandes','Sin soportes'], color:'#C0392B', img:'img/ttr-org-europe-1.jpg' },
+  { id:118, name:'Organizer / Insert for Train – Ticket to Ride', game:'ticket', type:'organizer', price:2, desc:'Organizador de trenes con sistema snap-fit. Compatible con todas las versiones (Europa, Alemania, USA). Trenes en filas de 5 para conteo rápido.', features:['Todas las versiones','Snap-fit','Conteo rápido'], color:'#C0392B', img:'img/ttr-org-train-1.jpg' },
+  { id:119, name:'Ticket to Ride Train Storage Box & Card Holder V2', game:'ticket', type:'organizer', price:3, desc:'Caja de almacenamiento de trenes con tapa deslizante que se divide en dos para organizar cartas durante el juego.', features:['Tapa deslizante','Dual-purpose','Card holder'], color:'#C0392B', img:'img/ttr-storage-1.jpg' },
+  { id:120, name:'Ticket to Ride - Inserts for Bambu Card Shuffler', game:'ticket', type:'card-holder', price:2, desc:'Insertos especiales compatibles con el Bambu Card Shuffler para Ticket to Ride.', features:['Card Shuffler','Bambu compatible','Innovador'], color:'#C0392B', img:'img/ttr-shuffler-1.jpg' },
+  { id:121, name:'Board Game Insert - 7 Wonders Duel', game:'7wonders', type:'insert', price:4, desc:'Inlay para la caja original de 7 Wonders Duel. Cabe el juego original y ambas expansiones (Agora y Pantheon). Compatible con cartas enfundadas.', features:['Duel + 2 exp.','Cartas enfundadas','AMS opcional'], color:'#B7950B', img:'img/7wonders-insert-1.jpg' },
+  { id:122, name:'Splendor Game Organizer (Rotating Coin Holder)', game:'splendor', type:'organizer', price:5, desc:'Organizador con porta-monedas giratorio y compartimentos de cartas estabilizados con imanes. Diseño elegante y funcional.', features:['Giratorio','Imanes','Elegante'], color:'#2ECC71', img:'img/splendor-rotorg-1.jpg' },
+  { id:123, name:'Portable Splendor Organizer Box', game:'splendor', type:'organizer', price:4, desc:'Caja organizadora portátil para Splendor. Compacta y perfecta para llevar el juego a cualquier lugar.', features:['Portátil','Compacto','Popular'], color:'#2ECC71', img:'img/splendor-portable-1.jpg' },
+  { id:124, name:'Splendor - Base game and Cities of Splendor', game:'splendor', type:'insert', price:5, desc:'Insert para juego base y expansión Cities of Splendor. Todo en una caja.', features:['Base + Cities','Una caja','Organizado'], color:'#2ECC71', img:'img/splendor-cities-1.jpg' },
+  { id:125, name:'Splendor Board Game Custom Storage Box', game:'splendor', type:'organizer', price:6, desc:'Caja personalizada con uniones de mortaja y espiga. Diseñada para tokens de arcilla de 43mm. Extremadamente resistente.', features:['Mortaja y espiga','Tokens 43mm','Ultra resistente'], color:'#2ECC71', img:'img/splendor-storagebox-1.jpg' },
+  { id:126, name:'Splendor Game Box Insert', game:'splendor', type:'insert', price:4, desc:'Insertos que caben en DOS ediciones de Splendor, juego base y una expansión. Con agujeros para fácil extracción.', features:['2 ediciones','Base + exp.','Agujeros acceso'], color:'#2ECC71', img:'img/splendor-boxinsert-1.jpg' },
+  { id:127, name:'Pandemic Board Game Organizer', game:'pandemic', type:'organizer', price:5, desc:'Insert completo para Pandemic de Z-MAN. Incluye 5 porta-cartas, caja de cubos de enfermedad con tapa y caja de tokens. Compatible con cartas enfundadas.', features:['5 porta-cartas','Tapas deslizantes','Cartas enfundadas'], color:'#E74C3C', img:'img/pandemic-org-1.jpg' },
+  { id:128, name:'Pandemic Box Organizer (Petri Dishes)', game:'pandemic', type:'insert', price:4, desc:'Organizador diseñado para usar petri dishes de 60x15mm (como la expansión On The Brink). Soportes mejorados para piezas.', features:['Petri dishes','On The Brink','Mejorado'], color:'#E74C3C', img:'img/pandemic-petri-1.jpg' },
+  { id:129, name:'Pandemic Boardgame Organizer (Compact)', game:'pandemic', type:'organizer', price:3, desc:'Bandeja con varios compartimentos para cubos, items y meeples. Porta-cartas con ranuras traseras opcionales. Cabe en caja original.', features:['Compacto','Caja original','Multifuncional'], color:'#E74C3C', img:'img/pandemic-compact-1.jpg' },
+  { id:130, name:'Organizer Boxes for Pandemic (Dual Use)', game:'pandemic', type:'organizer', price:4, desc:'Set completo que funciona como organizador en caja Y durante el juego. La tapa de cubos sirve como pila de Player Deck en el tablero.', features:['Doble uso','En mesa y caja','Innovador'], color:'#E74C3C', img:'img/pandemic-dual-1.jpg' },
+  { id:131, name:'Dixit Game Organizer Insert', game:'dixit', type:'insert', price:3, desc:'Insert personalizado para la caja de Dixit. Espacio dedicado para tokens, peones y cartas. Diseño simple pero efectivo.', features:['Caja original','Simple','Funcional'], color:'#AF7AC5', img:'img/dixit-org-1.jpg' },
+  { id:132, name:'Exploding Kittens Card Organizer', game:'exploding', type:'card-holder', price:2, desc:'Organizador que cabe el juego base + 3 expansiones en la caja original. Ranuras separadas para cada expansión.', features:['Base + 3 exp.','Caja original','Separado'], color:'#F39C12', img:'img/expkittens-org-1.jpg' },
+  { id:133, name:'Insert Exploding Kittens + Extensions', game:'exploding', type:'insert', price:2, desc:'Insert para juego base y 3 expansiones (Imploding, Streaking, Barking). Compatible con cartas enfundadas premium 100µm. Almacenamiento vertical.', features:['3 expansiones','Enfundadas 100µm','Vertical'], color:'#F39C12', img:'img/expkittens-ext-1.jpg' },
+  { id:134, name:'Exploding Kittens Expansion Box - Magnetic Lock', game:'exploding', type:'organizer', price:3, desc:'Caja para expansiones con cierre magnético. Compartimentos para reglas y tags decorativos por expansión.', features:['Cierre magnético','Tags por exp.','Logo custom'], color:'#F39C12', img:'img/expkittens-magbox-1.jpg' },
+  { id:135, name:'Exploding Kittens Card Organizer Box', game:'exploding', type:'card-holder', price:2, desc:'Caja organizadora compatible con cartas enfundadas y sin enfundar. Máxima versatilidad para cualquier jugador.', features:['Enfundadas/sin','Versátil','Compacto'], color:'#F39C12', img:'img/expkittens-orgbox-1.jpg' },
+  { id:136, name:'Ark Nova and Marine Worlds Insert', game:'arknova', type:'insert', price:8, desc:'Insert para Ark Nova + Marine Worlds. Soporte vertical, cartas enfundadas. Bandejas pass-n-go para jugadores. Todo en la caja principal.', features:['Base + Marine Worlds','Vertical','Pass-n-go trays'], color:'#27AE60', img:'img/arknova-insert-1.jpg' },
+  { id:137, name:'Ark Nova and Marine World Insert/Organizer 2025', game:'arknova', type:'insert', price:8, desc:'Versión actualizada 2025 del organizador para Ark Nova con Marine Worlds.', features:['Versión 2025','Actualizado','Completo'], color:'#27AE60', img:'img/arknova-org2025-1.jpg' },
+  { id:138, name:'Brass Birmingham Insert Premium Organizer', game:'brass-birm', type:'insert', price:10, desc:'Insert premium con acabado bronce. Setup ultra-rápido: porta-cartas van directo al tablero, bandejas de hierro/carbón encajan en la grilla. Monedas divididas en dos bandejas.', features:['Premium','Ultra-rápido setup','Filamento bronce','Componentes 3D'], color:'#C9A84C', img:'img/brass-org-mw-1.jpg' },
+  { id:139, name:'Brass Birmingham/Lancashire Insert Premium', game:'brass-lanc', type:'insert', price:10, desc:'El mismo diseño premium sirve como base para Lancashire. Organizador con componentes 3D impresos incluidos (hierro, carbón, fichas).', features:['Compatible Lancashire','Premium','Componentes 3D'], color:'#4A4A4A', img:'img/brass-lanc-1.jpg' },
+  { id:140, name:'Board Game Organizer - Terraforming Mars', game:'terraforming', type:'insert', price:8, desc:'Insert para juego base con espacio para cartas enfundadas y set de tiles 3D imprimibles. 4 contenedores para tiles 3D, 6 bandejas de jugador.', features:['Base game','Tiles 3D','6 bandejas jugador'], color:'#E74C3C', img:'img/terraforming-org-mw-1.jpg' },
+  { id:141, name:'Terraforming Mars Insert Organizer', game:'terraforming', type:'insert', price:6, desc:'Insert para TODAS las expansiones excepto big box addons. Compatible con tableros deluxe y cartas premium enfundadas. Diseño mínimo en plástico.', features:['Todas las exp.','Deluxe boards','Mínimo plástico'], color:'#E74C3C', img:'img/terraforming-insert-1.jpg' },
+  { id:142, name:'Terraforming Mars Organizer + Player Mat', game:'terraforming', type:'organizer', price:10, desc:'Set completo: organizador del juego + tapetes de jugador impresos en 3D para evitar perder el registro de producción.', features:['Player mats 3D','Set completo','Corporate Era'], color:'#E74C3C', img:'img/terraforming-orgmat-1.jpg' },
+  { id:143, name:'TERRAFORMING MARS INSERT (Hellas + Turmoil)', game:'terraforming', type:'insert', price:7, desc:'Insert con soporte para expansiones Hellas y Turmoil. Incluye tableros de doble espesor y miniatura de primer jugador.', features:['Hellas','Turmoil','Tableros dobles'], color:'#E74C3C', img:'img/terraforming-hellas-1.jpg' },
+  { id:144, name:'Scythe Storage Boxes', game:'scythe', type:'organizer', price:10, desc:'Cajas de almacenamiento con logos de las 7 facciones. Incluye cajas para recursos, monedas y cartas con divisores. Todo en la caja original.', features:['7 facciones','Base + Invaders','Logos AMS','Caja original'], color:'#5B2C6F', img:'img/scythe-storage-1.jpg' },
+  { id:145, name:'Scythe Faction Organizer Box', game:'scythe', type:'organizer', price:3, desc:'Caja organizadora por facción con compartimentos para miniaturas, tokens y otras piezas. Tapa plana removible.', features:['Por facción','Miniaturas','Tapa removible'], color:'#5B2C6F', img:'img/scythe-faction-1.jpg' },
+  { id:146, name:'Scythe Legendary Box ALL IN Insert', game:'scythe', type:'insert', price:30, desc:'Insert modular para Legendary Box. 9 porta-facciones, porta-cartas de combate, organizador de setup Fenris. ~1637g de filamento.', features:['Legendary Box','ALL IN','Fenris','Modular board'], color:'#5B2C6F', img:'img/scythe-allin-1.jpg' },
+  { id:147, name:'Everdell + All Expansions Boardgame Organizer', game:'everdell', type:'insert', price:12, desc:'Insert completo para Everdell y TODAS las expansiones. Bandejas de cartas con divisores móviles, marcos para Wonders 3D, bandejas de recursos con cestas.', features:['TODAS las exp.','Divisores móviles','Marcos 3D Wonders'], color:'#27AE60', img:'img/everdell-allexp-1.jpg' },
+  { id:148, name:'Everdell Insert and Player Tray + Card Holder', game:'everdell', type:'insert', price:6, desc:'Insert con bandejas de jugador y porta-cartas integrado.', features:['Player tray','Card holder','Integrado'], color:'#27AE60', img:'img/everdell-insert-1.jpg' },
+  { id:149, name:'Everdell Tree (Colored AMS)', game:'everdell', type:'misc', price:4, desc:'Árbol de Everdell impreso en colores con AMS. Pieza decorativa y funcional para reemplazar el árbol de cartón.', features:['Multicolor AMS','Decorativo','Reemplazo cartón'], color:'#27AE60', img:'img/everdell-tree-1.jpg' },
+  { id:150, name:'Everdell Resources Boxes', game:'everdell', type:'organizer', price:3, desc:'Cajas para recursos de Everdell. Organizan bayas, resina, piedras y madera.', features:['4 recursos','Compacto','Temático'], color:'#27AE60', img:'img/everdell-resources-1.jpg' },
+  { id:151, name:'Everdell Resource Baskets and Lids', game:'everdell', type:'token', price:3, desc:'Cestas de recursos con tapas para Everdell. Diseño temático que complementa la estética del juego.', features:['Cestas temáticas','Con tapas','Estético'], color:'#27AE60', img:'img/everdell-baskets-1.jpg' },
+  { id:152, name:'Animals for Everdell Board Game', game:'everdell', type:'misc', price:2, desc:'Miniaturas de animales para Everdell. Piezas decorativas para mejorar la experiencia de juego.', features:['Miniaturas','Decorativas','Detalladas'], color:'#27AE60', img:'img/everdell-animals-1.jpg' },
+  { id:153, name:'Gloomhaven Jaws of the Lion Organizer', game:'gloomjaws', type:'insert', price:6, desc:'Organizador completo: 4 bandejas de personaje, bandeja de monstruos, porta-cartas grande/pequeño, bandejas de tokens. Compatible .4 y .8 nozzle.', features:['Completo','Multi-nozzle','.8 optimizado','Video guía'], color:'#C0392B', img:'img/gloomhaven-org-1.jpg' },
+  { id:154, name:'Organizador Anachrony', game:'anachrony', type:'insert', price:40, desc:'Organizador completo para Anachrony con compartimentos para recursos, trabajadores, fichas de exosuit, cartas y tableros de facción. Todo organizado para setup rápido.', features:['Completo','Bandejas recursos','Setup rápido','Premium'], color:'#7D3C98', img:['img/anachrony-org-1.jpg','img/anachrony-org-2.jpg','img/anachrony-org-3.jpg','img/anachrony-org-4.jpg','img/anachrony-org-5.jpg','img/anachrony-org-6.jpg','img/anachrony-org-7.jpg','img/anachrony-org-8.jpg','img/anachrony-org-9.jpg','img/anachrony-org-10.jpg','img/anachrony-org-11.jpg'], own:true },
+  { id:155, name:'Clank! Catacombs w/Expansions Organizer Insert', game:'clank', type:'insert', price:10, desc:'Insert para Clank! Catacombs + Adventuring Party + Lairs and Lost Chambers. Bandejas de mercado, bandeja de reserva con slider para Goblin, bandejas individuales de jugador.', features:['3 expansiones','Cartas enfundadas','Magnetos opcionales','Bandeja Goblin'], color:'#8E44AD', img:'img/clank-catorg-1.jpg' },
+  { id:156, name:'Clank! All Non-Legacy Expansions Organizer', game:'clank', type:'insert', price:8, desc:'Organizador para Clank! A Deck Building Adventure y todas las expansiones no-legacy. Con tapas para bandejas de jugador.', features:['No-legacy exp.','Tapas incluidas','Caja original'], color:'#8E44AD', img:'img/clank-allexp-1.jpg' },
+  { id:157, name:'Clank! Catacombs + Adventuring Party Insert', game:'clank', type:'insert', price:8, desc:'Insert alternativo para Catacombs y Adventuring Party. Optimizado y ajustado.', features:['Catacombs','Adventuring Party','Optimizado'], color:'#8E44AD', img:'img/clank-advparty-1.jpg' },
+  { id:158, name:'Dune Imperium Uprising Insert / Organizer', game:'dune', type:'insert', price:8, desc:'Insert premium para Uprising. Porta-cartas con slots para fila de Imperium. Bandejas de jugador individuales con slot para líder. Miniatura de maker hook.', features:['Uprising','Bandejas jugador','Maker hook 3D','Zero lid lift'], color:'#D4A843', img:'img/dune-uprising-1.jpg' },
+  { id:159, name:'Dune Imperium Uprising Insert (falcof)', game:'dune', type:'insert', price:8, desc:'Diseño revolucionario con bandejas principales, bandejas de jugador y organización completa de tokens de especias, agua e influencia.', features:['Colaborativo','Tokens organizados','Setup rápido'], color:'#D4A843', img:'img/dune-uprising-2.jpg' },
+  { id:160, name:'Dune Imperium Organizer (Original + Expansions)', game:'dune', type:'organizer', price:6, desc:'Organizador para Dune Imperium original con espacio para expansiones Rise of Ix y Lineages.', features:['Original','Rise of Ix','Lineages'], color:'#D4A843', img:'img/dune-orgexp-1.jpg' },
+  { id:163, name:'War of the Ring - Card Game Storage Insert', game:'wotr', type:'insert', price:5, desc:'Insert para War of the Ring: The Card Game. Acomoda Against the Shadow y Fire and Swords con cartas enfundadas premium.', features:['Card Game','2 expansiones','Premium sleeves'], color:'#B7950B', img:'img/wotr-cardinsert-1.jpg' },
+  { id:165, name:'Board Game Organizer - Blood Rage', game:'bloodrage', type:'organizer', price:10, desc:'Organizador para versión retail con espacio para TODOS los addons: 5to jugador, Mystics of Midgard, Gods of Asgard. Bandejas por clan y monstruos.', features:['Retail + addons','5 clanes','Monstruos','Gods of Asgard'], color:'#E74C3C', img:'img/bloodrage-org-1.jpg' },
+  { id:166, name:'Blood Rage Sleeved Cards Organizer', game:'bloodrage', type:'card-holder', price:2, desc:'Porta-cartas modificado para cartas enfundadas de Blood Rage. Complemento del organizador de Josh-3D.', features:['Cartas enfundadas','Complemento','Compatible Josh-3D'], color:'#E74C3C', img:'img/bloodrage-sleeved-1.jpg' },
+  { id:167, name:'Wingspan w/Expansions - Organizer Insert', game:'wingspan', type:'insert', price:15, desc:'Insert para base + European + Oceania + Asia + Swift-Start. 5 tableros de jugador sin lid-lift. 64 imanes 6x3mm. Bandejas de comida 3D.', features:['4 expansiones','64 imanes','5 jugadores','Sin lid-lift'], color:'#3498DB', img:'img/wingspan-org-1.jpg' },
+  { id:168, name:'Wingspan w/ALL Expansions - Organizer Insert', game:'wingspan', type:'insert', price:15, desc:'Versión actualizada para TODAS las expansiones incluyendo las más recientes. Futureproof.', features:['TODAS exp.','Futureproof','Premium','Nesting trays'], color:'#3498DB', img:'img/wingspan-allexp-1.jpg' },
+  { id:169, name:'D&D Dice Towers (múltiples diseños)', game:'dnd', type:'dice-tower', price:3, desc:'MakerWorld tiene cientos de torres de dados temáticas de D&D: castillos, dragones, mazmorras, torres medievales. Busca \'D&D dice tower\' en MakerWorld.', features:['Castillos','Dragones','Mazmorras','Print-in-place'], color:'#7D3C98', img:'img/dnd-dicetower-1.jpg' },
+  { id:170, name:'D&D Miniatures & Terrain', game:'dnd', type:'misc', price:1, desc:'Enorme comunidad de miniaturas, terrenos, mazmorras modulares, props y accesorios para D&D. Miles de modelos gratuitos.', features:['Miniaturas','Terreno modular','Props','Mazmorras'], color:'#7D3C98', img:'img/dnd-miniatures-1.jpg' },
+  { id:171, name:'D&D Spell Slot Trackers & Initiative Trackers', game:'dnd', type:'token', price:1, desc:'Rastreadores de slots de hechizo, trackers de iniciativa, organizadores de condiciones y marcadores de estado para D&D.', features:['Spell slots','Iniciativa','Condiciones','Tracking'], color:'#7D3C98', img:'img/dnd-spelltracker-1.jpg' },
+  { id:172, name:'D&D DM Screens & Organizers', game:'dnd', type:'organizer', price:5, desc:'Pantallas de DM impresas en 3D, organizadores de mapa, porta-dados, cajas de minis y bandejas de encuentro.', features:['DM Screen','Porta-dados','Caja minis','Encuentros'], color:'#7D3C98', img:'img/dnd-dmscreen-1.jpg' },
+  { id:173, name:'Gloomhaven Box Insert Organizer', game:'gloomhaven', type:'insert', price:12, desc:'Insert completo para el juego base con espacio de sobra. Organiza todas las cartas, tokens y tiles de 3 hexes o menos. Documentación PDF incluida.', features:['Juego base','Espacio extra','PDF guía','Todas las piezas'], color:'#C0392B', img:'img/gloomhaven-org-1.jpg' },
+  { id:174, name:'Gloomhaven 2nd Edition Insert', game:'gloomhaven', type:'insert', price:20, desc:'Insert para 2da edición. Acceso rápido a standees de monstruos, cajas de jugador all-inclusive, bandejas de overlay visibles. Zero lid lift. MUCHO filamento.', features:['2da Edición','Zero lid lift','All-inclusive','Premium'], color:'#C0392B', img:'img/gloomhaven-2nd-1.jpg' },
+];
+
+const BENEFITS = [
+  { icon:'🎨', title:'Diseño Artesanal', desc:'Cada pieza es diseñada con atención al detalle, respetando la estética de cada juego.' },
+  { icon:'🖨️', title:'Impresión de Alta Calidad', desc:'Utilizamos materiales de alta calidad para lograr acabados profesionales en cada artefacto.' },
+  { icon:'🎯', title:'Hecho a Medida', desc:'Elaboramos cada pedido individualmente, asegurando calidad y personalización.' },
+  { icon:'📦', title:'Envío a Todo el País', desc:'Realizamos envíos a nivel nacional en empaques seguros y protectores para que tus artefactos lleguen en perfecto estado.' },
+  { icon:'♻️', title:'Material Eco-Friendly', desc:'Trabajamos con PLA biodegradable y materiales responsables con el medio ambiente.' },
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let cart = [];
+let activeFilter = 'all';
+let activeType = 'all';
+let searchQuery = '';
+let cartOpen = false;
+
+// ═══════════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════════
+function scrollToSection(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function getGameName(id) {
+  return GAMES.find(g => g.id === id)?.name || id;
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function toggleCart() {
+  cartOpen = !cartOpen;
+  document.getElementById('cartOverlay').classList.toggle('open', cartOpen);
+  document.getElementById('cartDrawer').classList.toggle('open', cartOpen);
+  if (cartOpen) document.body.style.overflow = 'hidden';
+  else document.body.style.overflow = '';
+}
+
+// ═══════════════════════════════════════════════════════════
+// CART LOGIC
+// ═══════════════════════════════════════════════════════════
+function addToCart(productId) {
+  const product = PRODUCTS.find(p => p.id === productId);
+  if (!product) return;
+  const existing = cart.find(i => i.id === productId);
+  if (existing) existing.qty++;
+  else cart.push({ ...product, qty: 1 });
+
+  const btn = document.querySelector(`[data-add="${productId}"]`);
+  if (btn) {
+    btn.classList.add('added');
+    btn.textContent = '✓ Agregado';
+    setTimeout(() => { btn.classList.remove('added'); btn.textContent = 'Agregar'; }, 1200);
+  }
+
+  showToast(`🔥 ${product.name} agregado al carrito`);
+  updateCartUI();
+}
+
+function updateQty(productId, delta) {
+  const item = cart.find(i => i.id === productId);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  updateCartUI();
+}
+
+function removeFromCart(productId) {
+  cart = cart.filter(i => i.id !== productId);
+  updateCartUI();
+}
+
+function getCartTotal() {
+  return cart.reduce((s, i) => s + i.price * i.qty, 0);
+}
+
+function getCartCount() {
+  return cart.reduce((s, i) => s + i.qty, 0);
+}
+
+function updateCartUI() {
+  const count = getCartCount();
+  const badge = document.getElementById('cartBadge');
+  badge.style.display = count > 0 ? 'flex' : 'none';
+  badge.textContent = count;
+
+  const itemsEl = document.getElementById('cartItems');
+  const footerEl = document.getElementById('cartFooter');
+
+  if (cart.length === 0) {
+    itemsEl.innerHTML = `
+      <div class="cart-empty">
+        <div class="cart-empty-icon">⚒️</div>
+        <p>Tu forja está vacía</p>
+        <p style="font-size:0.85rem;margin-top:0.5rem;font-family:'Crimson Pro',serif">Explora el catálogo y agrega artefactos épicos</p>
+      </div>`;
+    footerEl.style.display = 'none';
+    return;
+  }
+
+  footerEl.style.display = 'block';
+  document.getElementById('cartTotal').textContent = `$${getCartTotal().toFixed(2)}`;
+
+  itemsEl.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <div class="cart-item-icon">${item.icon}</div>
+      <div class="cart-item-details">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-game">${getGameName(item.game)}</div>
+        <div class="cart-item-controls">
+          <button class="qty-btn" onclick="updateQty(${item.id},-1)">−</button>
+          <span class="qty-value">${item.qty}</span>
+          <button class="qty-btn" onclick="updateQty(${item.id},1)">+</button>
+          <button class="remove-btn" onclick="removeFromCart(${item.id})">🗑️</button>
+        </div>
+      </div>
+      <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHECKOUT
+// ═══════════════════════════════════════════════════════════
+function buildOrderMsg() {
+  let msg = '🔥 *NUEVO PEDIDO - Forja Arcana 3D* 🔥\n\n';
+  cart.forEach(item => {
+    msg += `▸ ${item.name} (${getGameName(item.game)}) x${item.qty} — $${(item.price * item.qty).toFixed(2)}\n`;
+  });
+  msg += `\n💰 *Total: $${getCartTotal().toFixed(2)}*\n\n`;
+  msg += `📋 _Todos los artículos se elaboran bajo pedido. El tiempo de entrega varía según la cantidad y complejidad del pedido._`;
+  return encodeURIComponent(msg);
+}
+
+function checkoutWhatsApp() {
+  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${buildOrderMsg()}`, '_blank');
+}
+
+function checkoutIG() {
+  window.open(`https://ig.me/m/${CONFIG.instagram}`, '_blank');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CONTACT
+// ═══════════════════════════════════════════════════════════
+function sendContact() {
+  const name = document.getElementById('cName').value;
+  const email = document.getElementById('cEmail').value;
+  const game = document.getElementById('cGame').value;
+  const message = document.getElementById('cMsg').value;
+
+  const msg = encodeURIComponent(
+    `📩 *Consulta desde Forja Arcana 3D*\n\n👤 ${name}\n📧 ${email}\n🎮 Juego: ${game || 'General'}\n\n💬 ${message}`
+  );
+  window.open(`https://wa.me/${CONFIG.whatsapp}?text=${msg}`, '_blank');
+
+  document.getElementById('contactForm').style.display = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('contactForm').style.display = 'flex';
+    document.getElementById('formSuccess').style.display = 'none';
+  }, 4000);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PRODUCTS FILTER
+// ═══════════════════════════════════════════════════════════
+function setFilter(gameId) {
+  activeFilter = gameId;
+  renderFilters();
+  renderProducts();
+}
+
+function setType(typeId) {
+  activeType = typeId;
+  renderTypeFilters();
+  renderProducts();
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDERERS
+// ═══════════════════════════════════════════════════════════
+function renderParticles() {
+  const el = document.getElementById('particles');
+  let html = '';
+  for (let i = 0; i < 30; i++) {
+    const left = Math.random() * 100;
+    const delay = Math.random() * 6;
+    const dur = 4 + Math.random() * 4;
+    const size = 1 + Math.random() * 2;
+    html += `<div class="particle" style="left:${left}%;animation-delay:${delay}s;animation-duration:${dur}s;width:${size}px;height:${size}px"></div>`;
+  }
+  el.innerHTML = html;
+}
+
+function renderBenefits() {
+  document.getElementById('benefitsGrid').innerHTML = BENEFITS.map(b => `
+    <div class="benefit-card fade-in">
+      <div class="benefit-icon">${b.icon}</div>
+      <h3 class="benefit-title">${b.title}</h3>
+      <p class="benefit-desc">${b.desc}</p>
+    </div>
+  `).join('');
+}
+
+function renderTypeFilters() {
+  document.getElementById('typeFilters').innerHTML = TYPES.map(t => `
+    <button class="type-btn ${activeType === t.id ? 'active' : ''}" onclick="setType('${t.id}')">
+      ${t.icon} ${t.name}
+    </button>
+  `).join('');
+}
+
+function renderFilters() {
+  document.getElementById('gameFilters').innerHTML = GAMES.map(g => `
+    <button class="filter-btn ${activeFilter === g.id ? 'active' : ''}" onclick="setFilter('${g.id}')">
+      <span>${g.icon}</span> ${g.name}
+    </button>
+  `).join('');
+}
+
+function getTypeLabel(type) {
+  const t = TYPES.find(t => t.id === type);
+  return t ? t.name : type;
+}
+
+function getTypeIcon(type) {
+  const map = { organizer:'📦', insert:'🗃️', 'dice-tower':'🎲', 'card-holder':'🃏', token:'🪙', misc:'✨' };
+  return map[type] || '🔥';
+}
+
+function renderProducts() {
+  let filtered = PRODUCTS;
+  if (activeFilter !== 'all') filtered = filtered.filter(p => p.game === activeFilter);
+  if (activeType !== 'all') filtered = filtered.filter(p => p.type === activeType);
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.desc.toLowerCase().includes(q) ||
+      getGameName(p.game).toLowerCase().includes(q) ||
+      getTypeLabel(p.type).toLowerCase().includes(q) ||
+      (p.features || []).some(f => f.toLowerCase().includes(q))
+    );
+  }
+
+  // Sort: own products first
+  filtered.sort((a, b) => (b.own ? 1 : 0) - (a.own ? 1 : 0));
+
+  document.getElementById('catalogCount').textContent = `${filtered.length} artefacto${filtered.length !== 1 ? 's' : ''} encontrado${filtered.length !== 1 ? 's' : ''}`;
+
+  document.getElementById('productsGrid').innerHTML = filtered.map(p => {
+    // Normalize img to array
+    const imgs = p.img ? (Array.isArray(p.img) ? p.img : [p.img]) : [];
+    const hasImgs = imgs.length > 0;
+    const multiImg = imgs.length > 1;
+    const bgFallback = `background:radial-gradient(ellipse at center, ${p.color}33 0%, ${p.color}11 50%, var(--dark-card) 100%)`;
+
+    let imgHtml = '';
+    if (hasImgs) {
+      imgHtml = `<div class="carousel-container" data-product-id="${p.id}" onclick="openLightbox(${p.id})">
+        ${imgs.map((src, i) => `<img src="${src}" alt="${p.name}" class="${i === 0 ? 'active' : ''}" onerror="this.remove()">`).join('')}
+      </div>`;
+      if (multiImg) {
+        imgHtml += `<button class="carousel-btn prev" onclick="event.stopPropagation();carouselNav(${p.id},-1)">‹</button>`;
+        imgHtml += `<button class="carousel-btn next" onclick="event.stopPropagation();carouselNav(${p.id},1)">›</button>`;
+        imgHtml += `<div class="carousel-dots">${imgs.map((_, i) => `<span class="${i === 0 ? 'active' : ''}" onclick="event.stopPropagation();carouselGo(${p.id},${i})"></span>`).join('')}</div>`;
+      }
+    }
+
+    return `
+    <div class="product-card fade-in ${p.own ? 'own-product' : ''}" data-pid="${p.id}">
+      <div class="product-img-area" style="${hasImgs ? '' : bgFallback}">
+        ${p.own ? '<span class="product-own-badge">🔥 Forja Arcana</span>' : ''}
+        <span class="product-badge">${getGameName(p.game)}</span>
+        <span class="product-type-tag ${p.type}">${getTypeLabel(p.type)}</span>
+        ${imgHtml}
+        <span style="${hasImgs ? 'display:none' : ''}">${getTypeIcon(p.type)}</span>
+      </div>
+      <div class="product-info">
+        <h3 class="product-name">${p.name}</h3>
+        <p class="product-desc">${p.desc}</p>
+        ${p.features ? `<div class="product-features">${p.features.map(f => `<span>${f}</span>`).join('')}</div>` : ''}
+        <div class="product-footer">
+          <span class="product-price">$${p.price.toFixed(2)}</span>
+          <button class="add-btn" data-add="${p.id}" onclick="addToCart(${p.id})">Agregar</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  observeFadeIns();
+}
+
+function renderFooterGames() {
+  document.getElementById('footerGames').innerHTML = GAMES.filter(g => g.id !== 'all').map(g =>
+    `<li><a onclick="setFilter('${g.id}');scrollToSection('catalogo')">${g.icon} ${g.name}</a></li>`
+  ).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CAROUSEL & LIGHTBOX
+// ═══════════════════════════════════════════════════════════
+function carouselNav(pid, dir) {
+  const container = document.querySelector(`.carousel-container[data-product-id="${pid}"]`);
+  if (!container) return;
+  const imgs = container.querySelectorAll('img');
+  const card = container.closest('.product-card');
+  const dots = card.querySelectorAll('.carousel-dots span');
+  let cur = [...imgs].findIndex(i => i.classList.contains('active'));
+  imgs[cur].classList.remove('active');
+  cur = (cur + dir + imgs.length) % imgs.length;
+  imgs[cur].classList.add('active');
+  dots.forEach((d, i) => d.classList.toggle('active', i === cur));
+}
+
+function carouselGo(pid, idx) {
+  const container = document.querySelector(`.carousel-container[data-product-id="${pid}"]`);
+  if (!container) return;
+  const imgs = container.querySelectorAll('img');
+  const card = container.closest('.product-card');
+  const dots = card.querySelectorAll('.carousel-dots span');
+  imgs.forEach(i => i.classList.remove('active'));
+  imgs[idx].classList.add('active');
+  dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+let lbImages = [];
+let lbIndex = 0;
+let lbProductName = '';
+
+function openLightbox(pid) {
+  const product = PRODUCTS.find(p => p.id === pid);
+  if (!product || !product.img) return;
+  lbImages = Array.isArray(product.img) ? product.img : [product.img];
+  lbIndex = 0;
+  lbProductName = product.name;
+  // Sync with carousel current index
+  const container = document.querySelector(`.carousel-container[data-product-id="${pid}"]`);
+  if (container) {
+    const imgs = container.querySelectorAll('img');
+    const cur = [...imgs].findIndex(i => i.classList.contains('active'));
+    if (cur >= 0) lbIndex = cur;
+  }
+  updateLightbox();
+  const lb = document.getElementById('lightbox');
+  lb.style.display = 'flex';
+  requestAnimationFrame(() => lb.classList.add('open'));
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('open');
+  setTimeout(() => { lb.style.display = 'none'; }, 300);
+  document.body.style.overflow = '';
+}
+
+function lbNav(dir) {
+  lbIndex = (lbIndex + dir + lbImages.length) % lbImages.length;
+  updateLightbox();
+}
+
+function updateLightbox() {
+  document.getElementById('lbImg').src = lbImages[lbIndex];
+  document.getElementById('lbCounter').textContent = lbImages.length > 1 ? `${lbIndex + 1} / ${lbImages.length}` : '';
+  document.getElementById('lbTitle').textContent = lbProductName;
+  // Show/hide nav buttons
+  document.querySelectorAll('.lightbox-nav').forEach(b => b.style.display = lbImages.length > 1 ? 'flex' : 'none');
+}
+
+// Keyboard navigation for lightbox
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lbNav(-1);
+  if (e.key === 'ArrowRight') lbNav(1);
+});
+
+// ═══════════════════════════════════════════════════════════
+// INTERSECTION OBSERVER FOR FADE-IN
+// ═══════════════════════════════════════════════════════════
+function observeFadeIns() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in:not(.visible)').forEach(el => observer.observe(el));
+}
+
+// ═══════════════════════════════════════════════════════════
+// SCROLL HANDLER
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  renderParticles();
+  renderBenefits();
+  renderTypeFilters();
+  renderFilters();
+  renderProducts();
+  renderFooterGames();
+
+  // Catalog search
+  document.getElementById('catalogSearch').addEventListener('input', function() {
+    searchQuery = this.value;
+    renderProducts();
+  });
+  updateCartUI();
+  observeFadeIns();
+});
+</script>
+<!-- LIGHTBOX -->
+<div class="lightbox-overlay" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <div class="lightbox-img-wrap">
+    <button class="lightbox-nav prev" onclick="lbNav(-1)">‹</button>
+    <img id="lbImg" src="" alt="">
+    <button class="lightbox-nav next" onclick="lbNav(1)">›</button>
+  </div>
+  <div class="lightbox-counter" id="lbCounter"></div>
+  <div class="lightbox-title" id="lbTitle"></div>
+</div>
+</body>
+</html>
