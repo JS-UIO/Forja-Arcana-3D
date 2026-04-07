@@ -1421,7 +1421,8 @@ function renderProducts() {
         <p class="product-desc">${p.desc}</p>
         ${p.features ? `<div class="product-features">${p.features.map(f => `<span>${f}</span>`).join('')}</div>` : ''}
         <div class="product-footer">
-          <button class="add-btn" data-add="${p.id}" onclick="addToCart(${p.id})" style="width:100%;text-align:center">Agregar</button>
+          <span class="product-price">$${p.price % 1 === 0 ? p.price : p.price.toFixed(2)}</span>
+          <button class="add-btn" data-add="${p.id}" onclick="addToCart(${p.id})">Agregar</button>
         </div>
       </div>
     </div>`;
